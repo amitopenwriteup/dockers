@@ -1,0 +1,155 @@
+docker basic commands
+
+docker search --help
+
+
+  -f, --filter filter   Filter output based on conditions provided
+      --format string   Pretty-print search using a Go template
+      --limit int       Max number of search results
+      --no-trunc        Don't truncate output
+
+example labs
+
+#list out the offical image
+
+docker search --filter "is-official=true" ubuntu
+
+#In this example, we're using --format to specify a custom output format that displays the image name, description,  #in a tabular format. The --no-trunc flag ensures that the output is not truncated.
+
+docker search --format "table {{.Name}}\t{{.Description}}" --no-trunc ubuntu  
+
+#get output in json format, and for running json query, install jq
+
+apt install jq
+
+docker search --format "{{.Name}} {{.Description}}" ubuntu | \
+  awk '{print $1}' | \
+  xargs -I {} curl -s -H "Accept: application/json" "https://hub.docker.com/v2/repositories/{}/" | \
+  jq -r '.star_count, .name'
+
+#In this example, we first use the docker search command to retrieve image names and descriptions, then we extract the image names using awk. Next, we use #xargs to iterate over the image names and make a curl request to Docker Hub's API to fetch the star count and other information for each image. Finally, we #use jq to extract and display the star count and image name.
+
+
+-------------------------------------------------------------------
+root@devvm:~# docker pull --help
+
+Usage:  docker pull [OPTIONS] NAME[:TAG|@DIGEST]
+
+Download an image from a registry
+
+Aliases:
+  docker image pull, docker pull
+
+Options:
+  -a, --all-tags                Download all tagged images in the repository
+      --disable-content-trust   Skip image verification (default true)
+      --platform string         Set platform if server is multi-platform capable
+  -q, --quiet                   Suppress verbose output
+
+
+example labs
+
+docker pull --platform linux/amd64 nginx:latest
+
+--------------------------------------------------------
+docker images --help
+
+Usage:  docker images [OPTIONS] [REPOSITORY[:TAG]]
+
+List images, which is pulled
+
+example labs
+
+  docker image ls, docker image list, docker images
+
+docker images --digests
+
+docker image list --format "table {{.ID}}\t{{.Repository}}\t{{.Tag}}\t{{.Size}}"
+
+
+-------------------------------------------------------------------------
+
+
+docker run command
+
+Run an Interactive Container:
+
+#Start an interactive container with a specific image, such as Ubuntu, and run a command inside it (e.g., a shell):
+
+docker run -it ubuntu /bin/bash
+
+exit
+
+#Run a Detached Container:
+
+#Start a detached container that runs in the background:
+
+docker run -d nginx
+
+#list the running container
+
+docker ps
+
+#get the container id
+
+# stop the container
+docker stop <provide container id>
+docker rm <container id>
+
+
+
+#Name the Container:
+
+#Assign a custom name to the container:
+
+docker run --name my-container nginx
+
+exit
+
+#Assignment: Run a container name my-nginx in detach mode, list it out and check stop with container name
+
+#Publish Ports:
+
+#Publish container ports to the host:
+
+docker run -p 8080:80 nginx
+
+#open in the browser of windows, http://<ipaddr>:8080
+-----------------------------------------------------------------------
+
+exec command:The docker exec command allows you to run a command inside a running Docker container.
+
+#To open an interactive shell (like /bin/bash) inside a running container, you can use the following command:
+
+docker run -d --name my-container nginx
+
+docker exec -it my-container /bin/bash
+
+#Run a Single Command Inside a Container:
+
+ docker exec  my-container cat /etc/passwd
+
+#You can execute a single command within a running container without opening an interactive shell
+
+docker exec -u 101 my-container whoami
+
+# trial ssignment: Run a container name my-test using centos (dokken/centos-8) with detached mode'
+Perform below steps
+#list out using docker command 
+#using docker exec command check the ip address: 'ip addr'
+#check the release version inside the container: 'cat /etc/os-release'
+
+
+------------
+Try some more commands
+
+docker history <image name>
+docker logs <containerid>
+docker restart <containerid>
+docker info
+
+
+
+
+
+
