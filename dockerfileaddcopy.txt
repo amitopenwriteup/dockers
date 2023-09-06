@@ -1,0 +1,37 @@
+Create dockerfile name addcmd
+
+FROM alpine:3.5
+RUN apk update
+ADD http://www.vlsitechnology.org/pharosc_8.4.tar.gz .
+
+docker build -t myimage3 -f addcmd .
+
+docker run -itd myimage3 /bin/sh
+
+docker ps
+
+docker attach <containerid>
+
+ls
+
+exit
+
+----------------
+
+copy command
+echo "Welcome to Dockerlabs !" > index.html
+
+create a dockerfile named: copydockerfile
+
+
+FROM alpine AS stage1
+LABEL maintainer="mydev"
+RUN echo "Welcome to Docker Labs!" > /opt/index.html
+
+docker build -t myimage4 -f copydockerfile .
+
+docker container run -d --rm --name myapp2 -p 8080:80 myimage4
+
+ip addr show
+
+curl http://<ipaddr>:8080
