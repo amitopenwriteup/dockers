@@ -1,0 +1,35 @@
+Lab for RUN command
+
+
+mkdir labs
+cd labs
+#create a dockerfile named as dockerfile
+FROM alpine:3.5
+RUN apk update
+RUN apk add git
+
+#build the image
+docker build -t myimage .
+
+docker images
+
+docker run -itd myimage /bin/sh
+docker ps
+
+#Go to container shell
+docker attach <containerid>
+
+#check the git version
+git --version
+
+#exit from the container
+exit
+
+#stop the container and remove the container using following commands
+
+docker stop <containerid>
+docker rm <contiainerid>
+docker images
+docker rmi <imageid>
+----------------------------------------
+
