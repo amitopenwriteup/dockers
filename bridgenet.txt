@@ -1,0 +1,39 @@
+Display all the existent networks in the host:
+$ docker network ls
+
+Let's create a new bridge network:
+$ docker network create -d bridge my-bridge-network
+
+
+Run a container linked to the created network:
+
+$ docker run -d -p 8081:8081 -e "port=8081" --name app --network=my-bridge-network <image name>
+
+
+Find the container internal ip using:
+
+$ docker inspect app
+
+Open a new terminal windows and run an ubuntu container in interactive mode:
+
+$ docker run -it --name client alpine:latest
+
+Install curl in the client container:
+
+$ apk --no-cache add curl  
+
+From the client container terminal try to browse to the app container: (change the IP Address accordingly)
+
+$ curl 172.21.0.2:8081 --connect-timeout 5
+
+You will get no access and the connection will be terminated due to timeout
+
+$ curl: (28) Connection timed out after 5000 milliseconds
+
+From the regular terminal run the command below to attach the client container to the created network:
+
+$ docker network connect my-bridge-network client
+
+From the client container terminal try to browse to the app container again: (change the IP Address accordingly)
+
+$ curl 172.21.0.2:8081 --connect-timeout 5
