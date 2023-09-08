@@ -1,0 +1,135 @@
+CMD
+
+using vi editor open a file named: cmddockerfile
+paste the below code
+
+FROM alpine:3.6
+RUN apk update
+CMD ["top"]
+
+save the file
+
+use docker build to build the image
+
+docker build -t myimagecmd -f cmddockerfile .
+
+docker run myimagecmd
+
+#observe top is running when you are starting the container
+
+#stop the container and remove
+---------------------------------------------------------------
+
+
+Entrypoint: Create a dockerfile using vi editor and provide a unique name "epdockerfile"
+
+
+FROM alpine:3.5
+LABEL maintainer="OW"
+
+ENTRYPOINT echo "Hi, Welcome"
+
+
+#using docker build command
+
+docker build -t epimage -f epdockerfile .
+
+docker image ls
+
+docker container run  epimage
+
+#Override the existing ENTRYPOINT
+
+docker container run --entrypoint "/bin/echo"  epimage "Hello, Training started! "
+
+
+
+---------------------------------------
+
+WORKDIR:The WORKDIR directive in Dockerfile defines the working directory for the rest of the instructions in the Dockerfile. The WORKDIR instruction wont create a new layer in the image but will add metadata to the image config.
+
+
+Dockerfile: create it using vi editor named: wordockerfile
+
+FROM alpine:3.9.3
+LABEL maintainer="OW"
+WORKDIR /opt/folder1
+RUN echo "Welcome to Trianing" > opt.txt
+WORKDIR /var/tmp/
+RUN echo "Welcome to Trianing" > tmp.txt
+
+docker build -t workdir:v3 -f wordockerfile .
+
+docker run -it workdir:v3 pwd
+
+
+------------------------------------------------------------------------------
+
+WORKDIR with environment variables as path, create dockerfile "envdockerfile"
+
+FROM alpine:3.9.3
+LABEL maintainer="OW"
+
+ENV DIRPATH /myfolder
+WORKDIR $DIRPATH
+
+
+docker build -t workdir:v4 -f envdockerfile .
+
+docker run -it workdir:v4 pwd
+
+-------------------------------------------------------------
+
+Create an image with ARG instruction
+
+# dockerfile name "argdockerfile"
+
+FROM alpine:3.9.3
+LABEL maintainer="mydev"
+
+#Setting a default value to Argument WELCOME_USER
+ARG WELCOME_USER=Training
+RUN echo "Welcome $WELCOME_USER, to Docker World!" > message.txt
+CMD cat message.txt
+
+
+docker image build -t arg:v1 -f argdockerfile .
+ docker run arg:v1
+
+
+
+
+
+
+
+
+
+
+
+
+
+----------------------------
+
+EXPOSE instruction
+
+The EXPOSE instruction expose a port, the protocol can be UDP or TCP associated with the indicated port, default is TCP with no specification. The EXPOSE won’t be able to map the ports on the host machine. Regardless of the EXPOSE settings, EXPOSE port can be override using -p flag while starting the container
+
+
+#create dockerfile "expdockerfile"
+
+FROM nginx:alpine
+LABEL maintainer="ow"
+
+EXPOSE 80/tcp
+EXPOSE 80/udp
+
+CMD [ "nginx","-g","daemon off;" ]
+
+
+ docker build -t expose:v1 -f expdockerfile .
+
+docker image ls
+
+ docker image inspect --format= expose:v1
+
+------------------------------------------

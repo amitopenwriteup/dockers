@@ -24,9 +24,9 @@ echo "Welcome to Dockerlabs !" > index.html
 create a dockerfile named: copydockerfile
 
 
-FROM alpine AS stage1
-LABEL maintainer="mydev"
-RUN echo "Welcome to Docker Labs!" > /opt/index.html
+FROM nginx:alpine
+LABEL maintainer="OW"
+COPY index.html /usr/share/nginx/html/
 
 docker build -t myimage4 -f copydockerfile .
 
@@ -35,3 +35,5 @@ docker container run -d --rm --name myapp2 -p 8080:80 myimage4
 ip addr show
 
 curl http://<ipaddr>:8080
+
+------------------------
