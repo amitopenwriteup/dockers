@@ -1,0 +1,87 @@
+
+CMD, RUN and ENTRYPOINT
+
+To start, let's create a script, log-event.sh. It simply adds one line to a
+file and then prints it:
+
+#bash script copy into date.sh script
+#!/bin/sh
+echo `date` $@ >> log.txt;
+cat log.txt;
+
+mkdir test
+cd test
+vi date.sh
+
+#copy and paste the above bash script
+
+chmod 777 date.sh
+
+-------------
+
+Lets add the run command in dockerfile
+lab:1
+
+FROM alpine
+ADD date.sh /
+RUN ["/date.sh", "image created"]
+
+
+docker run myimage cat log.txt
+Check the time
+
+If we run the container several times, we'll see that the date in our
+log file doesn't change. This makes sense because the run step
+executes at image build time, not at the container runtime.
+Modify the docker file and RUN command now
+
+lab2
+
+FROM alpine
+ADD date.sh /
+RUN ["/date.sh", "image created"]
+CMD ["/date.sh", "container started"]
+docker build -t myimage1 .
+
+If we run this multiple times, we'll see that the image created entry
+stays the same. But the container started entry updates with every
+run. This shows how cmd indeed executes every time the container
+starts.
+If we run the older command
+docker run myimage1 cat log.txt
+
+This time the cmd specified in the Dockerfile is ignored. That's
+because we have specified arguments to the docker run command.
+lab3
+Lets add two commands:
+root@ubuntu20:~/test# vi dockerfile
+FROM alpine
+ADD date.sh /
+RUN ["/date.sh", "image created"]
+CMD ["/date.sh", "container started"]
+CMD ["/date.sh", "container running"]
+docker build myimage2 .
+------------------------------------------------
+
+That's because only the last cmd is invoked if more than one is
+specified.
+ENTRYPOINT
+
+FROM alpine
+ADD date.sh /
+RUN ["/date.sh", "image created"]
+ENTRYPOINT ["/date.sh"]
+docker build -t myimage3 .
+
+docker run myimage3 welcome to container
+
+Assignment: Try CMD and ENTRYPOINT together and let me know the observation
+
+Tag and push
+docker login
+
+docker image tag myimage amitow/myimage
+
+docker image push amitow/myimage
+
+
