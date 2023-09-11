@@ -1,0 +1,63 @@
+    docker ps
+    ip addr show
+    dokcer inspect
+    docker network ls
+    docker run --name web  -d praqma/network-multitool
+    docker ps
+    docker network inspect bridge
+    docker inspect web | egrep "MacAddress|IPAddress"
+    docker exec web ip addr show
+
+------------------------------------
+Create a bridge network:
+
+docker network create mynet
+docker network ls
+docker network inspect mynet
+
+It should show up as a network interface on the host with the name br-<random-string> .
+
+ip addr show
+
+
+docker run --name=web --network=mynet \
+             -d praqma/network-multitool
+
+docker run --name=db --network=mynet \
+             -e MYSQL_ROOT_PASSWORD=secret \
+             -d mysql
+
+docker ps
+
+docker network inspect mynet
+
+-----------------------------------------------------
+
+Here is how containers on the host network look like:
+
+docker run --name multitool --network host \
+                 -d praqma/network-multitool
+
+docker ps
+docker logs multitool
+docker exec -it multitool /bin/sh
+
+docker container inspect nginx
+
+
+-----------------------
+
+None
+
+docker run --name multitool \
+                --network none \
+                -p 80:80 \
+                -d praqma/network-multitool
+
+docker ps
+
+ docker exec -it multitool /bin/bash
+
+bash-5.0# ifconfig -a
+
+--------------------------------
