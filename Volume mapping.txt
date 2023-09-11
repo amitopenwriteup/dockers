@@ -1,0 +1,46 @@
+Volume mapping
+
+docker volume ls
+
+docker inspect <volume name>
+
+#Creating Volume called demo
+
+docker volume create demo
+
+docker inspect demo
+
+#Removing the “demo” Docker Volume
+
+docker volume rm demo
+
+----------------------------
+map a volume to container
+
+#Display existing volumes:
+docker volume ls
+#Create a new volume:
+docker volume create my-volume
+#Inspect the new volume to find the mountpoint (volume location):
+docker volume inspect my-volume
+
+#Let’s run a container and mount the created volume to the root:
+
+docker run -it -v my-volume:/data --name my-container selaworkshops/busybox:latest
+
+#Create a new file under /data:
+cd /data
+echo "hello" > hello.txt
+ls
+exit
+
+
+#Open other terminal instance and run other container with the same volume:
+docker run -it -v my-volume:/data --name my-container-2 selaworkshops/busybox:latest
+
+#inspect the /data folder (the created file will be there):
+cd data
+ls
+exit
+
+#REmove the containers and remove the image
