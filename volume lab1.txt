@@ -1,0 +1,44 @@
+docker run -itd --rm --name nginx -p 8080:80 -v demo-earthly:/usr/share/nginx/html nginx
+
+docker volume ls
+
+#check the volumes sections in docker desktop, check details and in-use section
+
+docker stop nginx
+
+#check the volumes sections in docker desktop, check details and in-use section
+
+docker volume rm demo-earthly
+
+-------------------------
+
+#Create dockerfile using vi editor
+
+FROM nginx:latest
+
+RUN echo "<h1>Hello from Volume</h1>" > /usr/share/nginx/html/index.html
+VOLUME /usr/share/nginx/html
+
+
+docker build -t demo .
+
+docker run -p 8080:80  demo
+
+#check the volumes sections in docker desktop, check details and in-use section
+
+
+-------------------------------------------
+
+Read-only
+
+docker run -it -v demo-volume:/data:ro ubuntu
+
+
+echo "test" > /data/test
+
+
+-----
+
+mount command
+
+docker run -it --name=example --mount source=demo-volume,destination=/data ubuntu
