@@ -1,0 +1,106 @@
+#First, Create a separate directory for our complete project. Use the following command.
+
+mkdir dockerComposeProject
+
+#Move inside the directory.
+
+cd dockerComposeProject
+
+#Then create a subdirectory for the service we will name it product. and move into the same.
+
+mkdir product
+cd product
+
+#Build Python  api.py
+
+from flask import Flask
+from flask_restful import Resource, Api
+
+# create a flask object
+app = Flask(__name__)
+api = Api(app)
+
+# creating a class for Fruits that will hold
+# the accessors
+class Fruits(Resource):
+    def get(self):
+      # returns a dictionary with fruits
+        return {
+            'fruits': ['Mango',
+                        'Pomegranate',
+                        'Orange',
+                        'Litchi']
+        }
+
+# adds the resources at the root route
+api.add_resource(Fruits, '/')
+
+# if this file is being executed then run the service
+if __name__ == '__main__':
+      # run the service
+    app.run(host='0.0.0.0', port=80, debug=True)
+
+#Create Dockerfile For Python API 
+
+FROM python:3-onbuild
+COPY . /usr/src/app
+CMD ["python", "api.py"]
+
+
+#Create Php HTML Website 
+
+cd ..
+mkdir website
+cd website
+
+# Create index.php using vi 
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <title>Fruit Service</title>
+</head>
+<body>
+   <h1>Welcome to India's Fruit Shop</h1>
+   <ul>
+       <?php
+           $json = file_get_contents('http://fruit-service');
+           $obj = json_decode($json);
+           $fruits = $obj->fruits;
+           foreach ($fruits as $fruit){
+               echo "<li> $fruit </li>";
+           }
+       ?>
+   </ul>
+</body>
+</html>
+
+#Move out of the website subdirectory using the following code.
+
+cd ..
+
+
+#Create Docker-compose.yaml file 
+
+version: "3"
+
+services:
+ fruit-service:
+   build: ./product
+   volumes:
+     - ./product:/usr/src/app
+   ports:
+     - 5001:80
+
+ website:
+   image: php:apache
+   volumes:
+     - ./website:/var/www/html
+   ports:
+     - 5000:80
+   depends_on:
+     - fruit-service
+
+#To start the application, enter the following command.
+
+docker-compose up -d 
