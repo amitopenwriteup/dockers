@@ -1,0 +1,96 @@
+Docker Swarm provides a set of commands to manage and interact with your Docker Swarm cluster. These commands are typically run on the manager node. Here are some commonly used Docker Swarm commands:
+
+1. **Initialize a Swarm:**
+ 
+   docker swarm init
+ 
+   This command initializes a new Docker Swarm. It designates the current machine as the manager node.
+
+2. **Join a Swarm as a Worker:**
+ 
+   docker swarm join --token <worker-token> <manager-ip>:<manager-port>
+ 
+   Use this command on worker nodes to join an existing Docker Swarm. Replace `<worker-token>` with the actual token provided by the manager and `<manager-ip>:<manager-port>` with the manager node's address.
+
+3. **Join a Swarm as a Manager:**
+ 
+   docker swarm join-token manager
+ 
+   This command generates a token that can be used to add new manager nodes to the swarm.
+
+4. **List Nodes in the Swarm:**
+ 
+   docker node ls
+ 
+   It lists all nodes in the swarm, including their status and roles (manager or worker).
+
+5. **Create a Service:**
+ 
+   docker service create <options> <image>
+
+docker service create --name my-nginx --replicas 2 -p 80:80 nginx:latest
+
+ 
+   This command creates a new service in the swarm. Replace `<options>` with the desired service configuration and `<image>` with the container image to use.
+
+6. **List Services:**
+ 
+   docker service ls
+
+ 
+   It displays a list of all services running in the swarm.
+
+7. **Inspect a Service:**
+ 
+   docker service inspect <service-name>
+ 
+   This command provides detailed information about a specific service, including its configuration and status.
+
+8. **Scale a Service:**
+ 
+   docker service scale <service-name>=<replica-count>
+ 
+   Use this command to scale a service by specifying the desired number of replicas.
+
+9. **Update a Service:**
+ 
+   docker service update <options> <service-name>
+ 
+   docker service create --name my-nginx --replicas 2 -p 80:80 nginx:1.14.2
+
+docker inspect my-nginx-1
+docker service update --image nginx:1.16.1 my-nginx-1
+docker ps
+
+
+
+   This command allows you to update the configuration of an existing service, such as its image, environment variables, or placement constraints.
+
+10. **Remove a Service:**
+  
+    docker service rm <service-name> 
+    It removes a service and its associated tasks (containers).
+
+11. **Leave Swarm:**
+  
+    docker swarm leave --force
+  
+    Use this command on a node to gracefully leave the swarm. The `--force` option is used to forcefully leave the swarm without prompting for confirmation.
+
+12. **Promote a Worker to Manager:**
+  
+    docker node promote <node-id>
+  
+    This command promotes a worker node to a manager node.
+
+13. **Demote a Manager to Worker:**
+  
+    docker node demote <node-id>
+  
+    This command demotes a manager node to a worker node.
+
+14. **Remove a Node from the Swarm:**
+  
+    docker node rm <node-id>
+  
+    It removes a node from the swarm, either a manager or a worker.
