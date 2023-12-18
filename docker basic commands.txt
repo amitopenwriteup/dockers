@@ -20,7 +20,7 @@ docker search --format "table {{.Name}}\t{{.Description}}" --no-trunc ubuntu
 
 #get output in json format, and for running json query, install jq
 
-yum install jq
+apt install jq -y
 
 docker search --format "{{.Name}} {{.Description}}" ubuntu | \
   awk '{print $1}' | \
